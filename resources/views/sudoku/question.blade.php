@@ -19,29 +19,34 @@
 </style>
 <body class="">
 	<div class="container pt-5">
-		<h3 class="col-12 text-center text-secondary py-2">Let Make <span class="font-weight-normal text-info">SUDOKU</span></h3>
-		<form method="POST" action="{{ route('questions.store')}}">
+		<h3 class="col-12 text-center text-secondary py-2"><span class="font-weight-normal text-info">SUDOKU</span> Solver</h3>
+		<form method="POST" action="{{ route('solution')}}">
 			@csrf
-			<table class="table col-4 offset-4">
-					@php 
-						$row=[3,6,9];
 
-					@endphp
+			<input type="text" name="prev" value="{{ isset($solution['prev'])?$solution['prev']:''}}" >
+			<table class="table col-4 offset-4">
+
 					@for($x = 1; $x <= 9; $x++)
 						<tr>
 							@for($i = 1; $i <= 9; $i++)
-							@php
-								$cord="question.0{$x}0{$i}";
-							@endphp
+								@php
+									$cord="question2.0{$i}0{$x}";
+								@endphp
 								<td class="sudoku_input @php if($x === [1,2]){ echo 'bg-danger'; } @endphp" style="padding: 1px;">
-									<input type="number" value="{{ config($cord) }}" max="9" min="1" name="cord[{{'0'.$x.'0'.$i }}]" class=" p-1 text-center form-control " onInput="checkLength(1,this)">
+									@if(isset($solution['cord']))
+										<input type="number" value='{{ $solution["cord"]["0{$i}0{$x}"] }}' class=" p-1 text-center form-control " name="cord[{{'0'.$i.'0'.$x }}]" onInput="checkLength(1,this)" readonly="">	
+									@else
+									<input type="number" value="{{ config($cord) }}" max="9" min="1" name="cord[{{'0'.$i.'0'.$x }}]" class=" p-1 text-center form-control " onInput="checkLength(1,this)">
+									@endif
 								</td>
 							@endfor
 						</tr>
 					@endfor
+
+
 			</table>
 			<div class="form-group col-4 offset-4">
-				<button type="submit" class="btn btn-info float-right">Create Question</button>
+				<button type="submit" class="btn btn-info float-right">Solve it</button>
 			</div>
 		</form>	
 	</div>

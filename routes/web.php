@@ -17,6 +17,8 @@ Route::get('/', function () {
 
 Route::get('/question', function(){
 	return view('sudoku.question');
-});
+})->name('question');
 
 Route::resource('/questions','QuestionController');
+Route::get('/solve','SolutionController@test')->name('solve');
+Route::post('/solution','SudokuSolverController@solveIt')->name('solution');
