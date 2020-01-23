@@ -23,7 +23,7 @@
 		<form method="POST" action="{{ route('solution')}}">
 			@csrf
 
-			<input type="text" name="prev" value="{{ isset($solution['prev'])?$solution['prev']:''}}" >
+			<input type="text" name="prev" value="{{ isset($answer['prev'])?$answer['prev']:''}}" >
 			<table class="table col-4 offset-4">
 
 					@for($x = 1; $x <= 9; $x++)
@@ -33,8 +33,8 @@
 									$cord="question2.0{$i}0{$x}";
 								@endphp
 								<td class="sudoku_input @php if($x === [1,2]){ echo 'bg-danger'; } @endphp" style="padding: 1px;">
-									@if(isset($solution['cord']))
-										<input type="number" value='{{ $solution["cord"]["0{$i}0{$x}"] }}' class=" p-1 text-center form-control " name="cord[{{'0'.$i.'0'.$x }}]" onInput="checkLength(1,this)" readonly="">	
+									@if(isset($answer['cord']))
+										<input type="number" value='{{ $answer["cord"]["0{$i}0{$x}"] }}' class=" p-1 text-center form-control " name="cord[{{'0'.$i.'0'.$x }}]" onInput="checkLength(1,this)" readonly="">	
 									@else
 									<input type="number" value="{{ config($cord) }}" max="9" min="1" name="cord[{{'0'.$i.'0'.$x }}]" class=" p-1 text-center form-control " onInput="checkLength(1,this)">
 									@endif

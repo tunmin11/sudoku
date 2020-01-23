@@ -172,6 +172,7 @@ class SudokuSolverController extends Controller
     	$test = [1,2,3,4];
 
     	$solution = [];
+    	dd(json_decode($request->prev)->cord);
     	foreach ($this->question as $cord => $value)
     	{
     		if ($value == "") 
@@ -203,71 +204,91 @@ class SudokuSolverController extends Controller
     			// dd($possible_num);
 				for ($i=0; $i <= count($possible_num) ; $i++) 
 				{ 
-
-
-					// dd(empty($possible_num[$cord][0]));
-					if (empty($possible_num[$cord][0])) 
+					if (empty($possible_num[$cord][0]))  // if empty number to fill
 					{
 						// dd(1);
-						$prev_cord = json_decode($request->prev)->cord;
-						$used_number = json_decode($request->prev)->number;
-						$solution = json_decode(Session::get('solution'),1);
+						$prev_cord = json_decode($request->prev)->cord; //get prev cord
+						$used_number = json_decode($request->prev)->number; //get used number for this cord
+						$solution = json_decode(Session::get('solution'),1); //get possible numbers for all cords 
 						
-						$unused_possible_num = array_values(array_filter($solution[$prev_cord],function($num)use($used_number){ return $num > $used_number; }));
+						//array filter to get numbers grater than used number for prev cord
+						$unused_possible_num = array_values(array_filter($solution[$prev_cord],function($num)use($used_number){ return $num > $used_number; })); 
+						
 
 						// dd($unused_possible_num);
 
-						if (empty($unused_possible_num)) 
+						if (empty($unused_possible_num)) //if prev cord have empty number to fill 
 						{
-							// dd($prev_cord);
-							$solution_keys = array_keys($solution);
+							//back to the last cord used befor prev cord and try again
+							$solution_keys = array_keys($solution); 
 							$target_array_key  = array_search($prev_cord, $solution_keys)-1; 
 							$target_cord = $solution_keys[$target_array_key];
 							$prev_unused_possible_num = array_values(array_filter($solution[$target_cord],function($num)use($question,$target_cord){ return $num > $question[$target_cord]; }));
+							// dd($target_cord);
+
+							for($key=$target_array_key+1; $key < count($solution_keys) ; $key++) { 
+
+								$question[$solution_keys[$key]] = "";
+								// dd($key);
+								// dd($solution_keys[$key]);
+							}
+
+							// dd($question);
+							$question[$prev_cord] = "";
+
+							$prev_target_cord = $solution_keys[array_search($target_cord, $solution_keys)-1];
+							// dd($question[$prev_target_cord]);
 
 							for ($z=0; $z < count($prev_unused_possible_num) ; $z++) 
 							{ 
-										// dd($prev_unused_possible_num[$z]);
-
-								if ($this->isValid($prev_unused_possible_num[$z],$target_cord))
-									{
+							
+										// dd($prev_unused_possible_num[$z],$target_cord);
+								// dd($this->isValid([$prev_unused_possible_num[$z]],$target_cord));
+								if ($this->isValid([$prev_unused_possible_num[$z]],$target_cord))
+								{
 				    					$question[$target_cord] = $prev_unused_possible_num[$z];
-										$solution['prev'] = json_encode(['cord'=>$target_cord,'number'=>$prev_unused_possible_num[$z]]);
+										$answer['prev'] = json_encode(['cord'=>$prev_target_cord,'number'=>$question[$prev_target_cord]]);
 										break;
+
 				    						
 									}
+										// dd($answer);
 							}
 
 								// dd($prev_unused_possible_num);
 
 						}
-						else
+						elseif (count($unused_possible_num)>0)
 						{
 							for ($y=0; $y < count($unused_possible_num) ; $y++) 
 							{ 
 								// dd($prev_cord);
-								dd(count($unused_possible_num));
+								// dd(count($unused_possible_num));
 
 								if ($this->isValid($unused_possible_num[$y],$prev_cord))
 									{
 				    					$question[$prev_cord] = $unused_possible_num[$y];
-										$solution['prev'] = json_encode(['cord'=>$prev_cord,'number'=>$unused_possible_num[$y]]);
-				    						
+										$answer['prev'] = json_encode(['cord'=>$prev_cord,'number'=>$unused_possible_num[$y]]);
+
+
 									}
 							}
 						}
 
 					}
+					elseif (!empty($possible_num[$cord][0])) 
+					{
+						if ($this->isValid($possible_num[$cord][$i],$cord))
+						{
+	    					$question[$cord] = $possible_num[$cord][$i];
+							$answer['prev'] = json_encode(['cord'=>$cord,'number'=>$possible_num[$cord][$i]]);
+	    					break;			
+						}
+						else
+						{
+						
+						}					
 
-					if ($this->isValid($possible_num[$cord][$i],$cord))
-					{
-    					$question[$cord] = $possible_num[$cord][$i];
-						$solution['prev'] = json_encode(['cord'=>$cord,'number'=>$possible_num[$cord][$i]]);
-    					break;			
-					}
-					else
-					{
-					
 					}
 
 					
@@ -280,8 +301,9 @@ class SudokuSolverController extends Controller
     
 
 
-    	$solution['cord'] = $question;
-    	return view('sudoku.question',compact('solution'));
+    	$answer['cord'] = $question;
+    	// dd($answer);
+    	return view('sudoku.question',compact('answer'));
 
 
 
