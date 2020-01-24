@@ -10,15 +10,12 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::get('/question', function(){
 	return view('sudoku.question');
 })->name('question');
 
 Route::resource('/questions','QuestionController');
-Route::get('/solve','SolutionController@test')->name('solve');
+Route::get('/test', function() {
+    dd(json_decode(session('solution'), 1));
+});
 Route::post('/solution','SudokuSolverController@solveIt')->name('solution');

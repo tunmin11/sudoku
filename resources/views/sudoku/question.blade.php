@@ -6,7 +6,7 @@
 	<link rel="stylesheet" type="text/css" href="{{ asset('css/app.css') }}">
 </head>
 <style type="text/css">
-	tr>:nth-child(3), tr>:nth-child(6){ 
+	tr>:nth-child(3), tr>:nth-child(6){
 		border-right: 2px solid #adadad;
 	}
 
@@ -14,29 +14,27 @@
 		border-bottom: 2px solid #adadad;
 	}
 
-
-	
 </style>
 <body class="">
 	<div class="container pt-5">
 		<h3 class="col-12 text-center text-secondary py-2"><span class="font-weight-normal text-info">SUDOKU</span> Solver</h3>
-		<form method="POST" action="{{ route('solution')}}">
+		<form method="POST" action="{{ route('solution')}}" id="form">
 			@csrf
 
-			<input type="text" name="prev" value="{{ isset($answer['prev'])?$answer['prev']:''}}" >
+            <input type="hidden" name="toSolveCord" value="{{ isset($nextToSolveCord) ? $nextToSolveCord : '' }}">
 			<table class="table col-4 offset-4">
 
 					@for($x = 1; $x <= 9; $x++)
 						<tr>
 							@for($i = 1; $i <= 9; $i++)
 								@php
-									$cord="question2.0{$i}0{$x}";
+									$cord="question.0{$i}0{$x}";
 								@endphp
 								<td class="sudoku_input @php if($x === [1,2]){ echo 'bg-danger'; } @endphp" style="padding: 1px;">
 									@if(isset($answer['cord']))
-										<input type="number" value='{{ $answer["cord"]["0{$i}0{$x}"] }}' class=" p-1 text-center form-control " name="cord[{{'0'.$i.'0'.$x }}]" onInput="checkLength(1,this)" readonly="">	
+										<input type="number" value='{{ $answer["cord"]["0{$i}0{$x}"] }}' class=" p-1 text-center form-control cord-input" name="cord[{{'0'.$i.'0'.$x }}]" onInput="checkLength(1,this)" readonly="">
 									@else
-									<input type="number" value="{{ config($cord) }}" max="9" min="1" name="cord[{{'0'.$i.'0'.$x }}]" class=" p-1 text-center form-control " onInput="checkLength(1,this)">
+									<input type="number" value="{{ config($cord) }}" max="9" min="1" name="cord[{{'0'.$i.'0'.$x }}]" class=" p-1 text-center form-control cord-input" onInput="checkLength(1,this)">
 									@endif
 								</td>
 							@endfor
@@ -48,11 +46,12 @@
 			<div class="form-group col-4 offset-4">
 				<button type="submit" class="btn btn-info float-right">Solve it</button>
 			</div>
-		</form>	
+		</form>
 	</div>
 </body>
+<script type="text/javascript" src="{{ asset('js/jquery.js') }}"></script>
 <script type="text/javascript">
- 
+
     function checkLength(len,ele){
     var fieldLength = ele.value.length;
     if(fieldLength <= len){
@@ -65,5 +64,12 @@
     	ele.value = str;
     }
     }
+
+    @if(isset($answeredCell) && $answeredCell < 81)
+    $(document).ready(function() {
+        $('#form').submit();
+    });
+    @endif
+
 </script>
 </html>
