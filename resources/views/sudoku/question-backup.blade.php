@@ -27,11 +27,14 @@
 					@for($x = 1; $x <= 9; $x++)
 						<tr>
 							@for($i = 1; $i <= 9; $i++)
+								@php
+									$cord="question2.0{$i}0{$x}";
+								@endphp
 								<td class="sudoku_input @php if($x === [1,2]){ echo 'bg-danger'; } @endphp" style="padding: 1px;">
 									@if(isset($answer['cord']))
 										<input type="number" value='{{ $answer["cord"]["0{$i}0{$x}"] }}' class=" p-1 text-center form-control cord-input" name="cord[{{'0'.$i.'0'.$x }}]" onInput="checkLength(1,this)" readonly="">
 									@else
-									<input type="number" max="9" min="1" name="cord[{{'0'.$i.'0'.$x }}]" class=" p-1 text-center form-control cord-input" onInput="checkLength(1,this)">
+									<input type="number" value="{{ config($cord) }}" max="9" min="1" name="cord[{{'0'.$i.'0'.$x }}]" class=" p-1 text-center form-control cord-input" onInput="checkLength(1,this)">
 									@endif
 								</td>
 							@endfor

@@ -7,13 +7,13 @@ use Illuminate\Support\Facades\Session;
 
 class SudokuSolverController extends Controller
 {
-	protected $question = [];
+    protected $question = [];
 
     public function checkPossibility($cord, $greaterThan = 1)
     {
-    	$possible_array = [];
-    	$question = $this->question;
-    	$xCord = substr($cord,0,2); //x position
+        $possible_array = [];
+        $question = $this->question;
+        $xCord = substr($cord,0,2); //x position
         $yCord = substr($cord,2,2); //y position
 
         $column = []; //numbers in its column
@@ -24,49 +24,49 @@ class SudokuSolverController extends Controller
          };
 
         $row = []; //numbers in its row
-    	for ($x=1; $x < 10 ; $x++)
-    	{
-    		$row[]=$question["0{$x}{$yCord}"];
-    	}
+        for ($x=1; $x < 10 ; $x++)
+        {
+            $row[]=$question["0{$x}{$yCord}"];
+        }
 
         $XYlines=array_merge($column,$row); //Numbers in XY line
 
         if($xCord >= 7 && $xCord <= 9) //Get x cord of 3x3 Grid
-    	{
-    		$gridx = [7,8,9];
-    	}
-    	elseif($xCord >= 4 && $xCord <= 6)
-    	{
-    		$gridx = [4,5,6];
-    	}
-    	elseif($xCord >= 1 && $xCord <= 3)
-    	{
-    		$gridx = [1,2,3];
-    	}
+        {
+            $gridx = [7,8,9];
+        }
+        elseif($xCord >= 4 && $xCord <= 6)
+        {
+            $gridx = [4,5,6];
+        }
+        elseif($xCord >= 1 && $xCord <= 3)
+        {
+            $gridx = [1,2,3];
+        }
 
-    	if($yCord >= 7 && $yCord <= 9) //Get y cord of 3x3 Grid
-    	{
-    		$gridy = [7,8,9];
-    	}
-    	elseif($yCord >= 4 && $yCord <= 6)
-    	{
-    		$gridy = [4,5,6];
-    	}
-    	elseif($yCord >= 1 && $yCord <= 3)
-    	{
-    		$gridy = [1,2,3];
-    	}
+        if($yCord >= 7 && $yCord <= 9) //Get y cord of 3x3 Grid
+        {
+            $gridy = [7,8,9];
+        }
+        elseif($yCord >= 4 && $yCord <= 6)
+        {
+            $gridy = [4,5,6];
+        }
+        elseif($yCord >= 1 && $yCord <= 3)
+        {
+            $gridy = [1,2,3];
+        }
 
-    	$grid = []; //Numbers in its 3x3 grids
+        $grid = []; //Numbers in its 3x3 grids
 
-    	foreach ($gridx as $x) {
-    		foreach ($gridy as $y)
-    		{
-    			$grid[] = $question["0{$x}0{$y}"];
-    		}
-    	}
+        foreach ($gridx as $x) {
+            foreach ($gridy as $y)
+            {
+                $grid[] = $question["0{$x}0{$y}"];
+            }
+        }
 
-    	$inValidNumbers =array_unique(array_merge($column,$row,$grid)); //Invalid numbers for this cord
+        $inValidNumbers =array_unique(array_merge($column,$row,$grid)); //Invalid numbers for this cord
         // echo "greaterThan => " . $greaterThan . "<br>";
         if($greaterThan >= 9) {
             $possible_array[$cord] = [];
@@ -74,24 +74,24 @@ class SudokuSolverController extends Controller
         }
 
         $sudoku_num = range($greaterThan, 9);
-    	$guessNumber = []; //Valid Numbers
-    	foreach ($sudoku_num as $number)
-    	{
-    		if (!in_array($number, $inValidNumbers))
-    		{
-    			$guessNumber[] = $number;
-    		}
-    	}
-    	$possible_array[$cord] = $guessNumber;
-    	return $possible_array;
+        $guessNumber = []; //Valid Numbers
+        foreach ($sudoku_num as $number)
+        {
+            if (!in_array($number, $inValidNumbers))
+            {
+                $guessNumber[] = $number;
+            }
+        }
+        $possible_array[$cord] = $guessNumber;
+        return $possible_array;
     }
 
 
     public function isValid($possivle_num,$cord)
     {
 
-    	$question = $this->question;
-    	$xCord = substr($cord,0,2); //x position
+        $question = $this->question;
+        $xCord = substr($cord,0,2); //x position
         $yCord = substr($cord,2,2); //y position
 
         $column = []; //numbers in its column
@@ -102,98 +102,112 @@ class SudokuSolverController extends Controller
          };
 
         $row = []; //numbers in its row
-    	for ($x=1; $x < 10 ; $x++)
-    	{
-    		$row[]=$question["0{$x}{$yCord}"];
-    	}
+        for ($x=1; $x < 10 ; $x++)
+        {
+            $row[]=$question["0{$x}{$yCord}"];
+        }
 
         $XYlines=array_merge($column,$row); //Numbers in XY line
 
         if($xCord >= 7 && $xCord <= 9) //Get x cord of 3x3 Grid
-    	{
-    		$gridx = [7,8,9];
-    	}
-    	elseif($xCord >= 4 && $xCord <= 6)
-    	{
-    		$gridx = [4,5,6];
-    	}
-    	elseif($xCord >= 1 && $xCord <= 3)
-    	{
-    		$gridx = [1,2,3];
-    	}
+        {
+            $gridx = [7,8,9];
+        }
+        elseif($xCord >= 4 && $xCord <= 6)
+        {
+            $gridx = [4,5,6];
+        }
+        elseif($xCord >= 1 && $xCord <= 3)
+        {
+            $gridx = [1,2,3];
+        }
 
-    	if($yCord >= 7 && $yCord <= 9) //Get y cord of 3x3 Grid
-    	{
-    		$gridy = [7,8,9];
-    	}
-    	elseif($yCord >= 4 && $yCord <= 6)
-    	{
-    		$gridy = [4,5,6];
-    	}
-    	elseif($yCord >= 1 && $yCord <= 3)
-    	{
-    		$gridy = [1,2,3];
-    	}
+        if($yCord >= 7 && $yCord <= 9) //Get y cord of 3x3 Grid
+        {
+            $gridy = [7,8,9];
+        }
+        elseif($yCord >= 4 && $yCord <= 6)
+        {
+            $gridy = [4,5,6];
+        }
+        elseif($yCord >= 1 && $yCord <= 3)
+        {
+            $gridy = [1,2,3];
+        }
 
-    	$grid = []; //Numbers in its 3x3 grids
+        $grid = []; //Numbers in its 3x3 grids
 
-    	foreach ($gridx as $x) {
-    		foreach ($gridy as $y)
-    		{
-    			$grid[] = $question["0{$x}0{$y}"];
-    		}
-    	}
+        foreach ($gridx as $x) {
+            foreach ($gridy as $y)
+            {
+                $grid[] = $question["0{$x}0{$y}"];
+            }
+        }
 
-    	$inValidNumbers =array_unique(array_merge($column,$row,$grid)); //Invalid numbers for this cord
+        $inValidNumbers =array_unique(array_merge($column,$row,$grid)); //Invalid numbers for this cord
 
-    	if(!in_array($possivle_num,$inValidNumbers)){
-    		return true;
-    	}
-    	return false;
+        if(!in_array($possivle_num,$inValidNumbers)){
+            return true;
+        }
+        return false;
     }
 
     public function checkFillableNumber($question)
     {
-		foreach ($question as $cord => $value)
-    	{
-    		if(in_array("",$question))
-    		{
-    			$solution = $this->question;
-    			return view('sudoku.question',compact('solution'));
-    		}
-    	}
+        foreach ($question as $cord => $value)
+        {
+            if(in_array("",$question))
+            {
+                $solution = $this->question;
+                return view('sudoku.question',compact('solution'));
+            }
+        }
     }
 
 
     public function solveIt(Request $request)
     {
-    	$question = $request->cord;
-    	$this->question = $question;
+        ini_set('max_execution_time', 0);
 
-    	$guessPossibilityForAllCells = $this->guessPossibilityForAllCells();
+        $question = $request->cord;
+        $this->question = $question;
+
+        $guessPossibilityForAllCells = $this->guessPossibilityForAllCells();
 
         $toSolveCord = isset($request->toSolveCord) ? $request->toSolveCord : array_keys($guessPossibilityForAllCells)[0];
 
-        do {
-            $solutionForCell = $this->solutionForCell($toSolveCord);
-            $toSolveCord = $solutionForCell['prevCord'];
-            $possibleNumber = $solutionForCell['possibleNumber'];
-            $currentCord = $solutionForCell['currentCord'];
+        if($this->countAnsweredCell() >= 81) {
+            $answer = $question;
+            $nextToSolveCord = "";
+        }
 
-            $question[$currentCord] = $possibleNumber;
+        $i = 0;
+        while ($this->countAnsweredCell() < 81) {
+            $i++;
+            if($i > 100000) {
+                break;
+            }
 
-            // print_r($solutionForCell);
-            // echo $currentCord;
-            // echo "<br>";
-        } while ( is_null($possibleNumber) );
+            do {
+                $solutionForCell = $this->solutionForCell($toSolveCord);
+                $toSolveCord = $solutionForCell['prevCord'];
+                $possibleNumber = $solutionForCell['possibleNumber'];
+                $currentCord = $solutionForCell['currentCord'];
+                $question[$currentCord] = $possibleNumber;
 
-        $nextToSolveCord = $solutionForCell['nextToSolveCord'];
+                // print_r($solutionForCell);
+                // echo $currentCord;
+                // echo "<br>";
+            } while ( is_null($possibleNumber) );
 
-    	$answer['cord'] = $question;
+            $toSolveCord = $nextToSolveCord = $solutionForCell['nextToSolveCord'];
+
+            $this->question = $answer['cord'] = $question;
+        }
 
         $answeredCell = $this->countAnsweredCell();
 
-    	return view('sudoku.question',compact('answer', 'nextToSolveCord', 'answeredCell'));
+        return view('sudoku.question',compact('answer', 'nextToSolveCord', 'answeredCell'));
     }
 
     public function countAnsweredCell()
@@ -226,7 +240,7 @@ class SudokuSolverController extends Controller
             $this->question[$toSolveCord] = null;
         } else {
             $possibleNumber = $possible_num[$toSolveCord][0];
-            $nextIndex = $index < 81 ? $index + 1 : $index;
+            $nextIndex = $index < (count($guessSolutionCordsArray) - 1)  ? $index + 1 : $index;
             $nextToSolveCord = $guessSolutionCordsArray[$nextIndex];
         }
 
